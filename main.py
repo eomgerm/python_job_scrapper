@@ -8,6 +8,7 @@ res = get(f"{base_url}{search_term}")
 if res.status_code != 200:
     print("Can't request website!")
 else:
+    results = []
     soup = BeautifulSoup(res.text, "html.parser")
     jobs = soup.find_all('section', class_="jobs")
     for job_section in jobs:
@@ -19,3 +20,10 @@ else:
             link = anchor['href']
             company, kind, region = anchor.find_all('span', class_='company')
             title = anchor.find('span', class_='title')
+            job_data = {
+                'company': company.string,
+                'kind': kind.string,
+                'region': region.string,
+                'position': title.string,
+            }
+            results.append(job_data)
