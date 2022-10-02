@@ -1,12 +1,9 @@
-from operator import imod
-from extractors.indeed import extract_indeed_jobs
-from extractors.wwr import extract_wwr_jobs
-from file import save_to_file
+from flask import Flask
 
-keyword = input("What do you want to search for?")
+app = Flask("JobsScrapper")
 
-indeed = extract_indeed_jobs(keyword)
-wwr = extract_wwr_jobs(keyword)
-jobs = indeed + wwr
+@app.route("/")
+def home():
+    return "Hello World!"
 
-save_to_file(keyword, jobs)
+app.run("127.0.0.1")
