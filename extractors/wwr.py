@@ -4,7 +4,9 @@ from bs4 import BeautifulSoup
 def extract_wwr_jobs(keyword):
     base_url = "https://weworkremotely.com/remote-jobs/search?utf8=%E2%9C%93&term="
 
-    res = get(f"{base_url}{keyword}")
+    target_url = f"{base_url}{keyword}"
+    print("Requesting...", target_url)
+    res = get(target_url)
     if res.status_code != 200:
         print("Can't request website!")
     else:
@@ -18,13 +20,13 @@ def extract_wwr_jobs(keyword):
                 anchors = post.find_all('a')
                 anchor = anchors[1]
                 link = anchor['href']
-                company, kind, region = anchor.find_all('span', class_='company')
+                company, _, region = anchor.find_all('span', class_='company')
                 title = anchor.find('span', class_='title')
                 job_data = {
-                    'company': company.string,
-                    'kind': kind.string,
-                    'location': region.string,
-                    'position': title.string,
+                    'link': f"https://weworkremotely.com{link}",
+                    'company': company.string.replace(',', ' ') if company.string != None else " ",
+                    'location': region.string.replace(',', ' ') if region.string != None else " ",
+                    'position': title.string.replace(',', ' ') if title.string != None else " ", 
                 }
                 results.append(job_data)
         return results
